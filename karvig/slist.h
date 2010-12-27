@@ -21,7 +21,6 @@ __BEGIN_DECLS
 slist_t *   slist_init();
 int         slist_insert(slist_t **slist, void *data);
 int         slist_delete(slist_t **slist);
-void        print_list(slist_t *slist);
 /*
 extern int          slist_insert_at_end(slist_t **slist, void *data);
 extern int          slist_insert_in_front(slist_t **slist, void *data);
