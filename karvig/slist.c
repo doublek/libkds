@@ -106,21 +106,3 @@ int slist_delete(slist_t **slist)
     return 0;
     
 }
-
-/*
- * print_list() - Print the contents of list.
- *
- */
-void print_list(slist_t *slist)
-{
-    slist_node_t *current;
-    
-    printf("Printing List:\n");
-    current = slist->head;
-    while (current != NULL)
-    {
-        printf("%s\n", (char *)current->data);
-        current = current->next;
-    }
-
-}
