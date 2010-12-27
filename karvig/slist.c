@@ -12,19 +12,19 @@
  *    |
  *   head
  *
- *  _____ 
+ * +-----+
  * |     |
  * |     |
  * |     |
- *  ----- 
+ * +-----+
  *    ^
  *    |
  *   head
- *  _____     _____
+ * +-----+   +-----+
  * |     |   |     |
  * |     |-->|     |
  * |     |   |     |
- *  -----     -----
+ * +-----+   +-----+
  *    ^
  *    |
  *   head
@@ -45,11 +45,11 @@ struct slist_node_t slist_create_node(void)
  * slist_init() - Initialize a singly linked list.
  *
  */
-struct slist_t * slist_init(void)
+slist_t * slist_init(void)
 {
-    struct slist_t *slist;
+   slist_t *slist;
 
-    slist = malloc(sizeof(struct slist_t));
+    slist = malloc(sizeof(slist_t));
 
     if(slist == NULL)
         return NULL;
@@ -59,10 +59,10 @@ struct slist_t * slist_init(void)
     return slist;
 }
 
-int slist_insert(struct slist_t **slist, void *data)
+int slist_insert(slist_t **slist, void *data)
 {
-    struct slist_node_t *new_node;
-    new_node = malloc(sizeof(struct slist_node_t));
+    slist_node_t *new_node;
+    new_node = malloc(sizeof(slist_node_t));
 
     if (new_node == NULL)
         return ENOMEM;
@@ -89,9 +89,9 @@ int slist_insert(struct slist_t **slist, void *data)
  * slist_remove() - Remove from head entry.
  *
  */
-int slist_delete(struct slist_t **slist)
+int slist_delete(slist_t **slist)
 {
-    struct slist_node_t *node_to_delete;
+    slist_node_t *node_to_delete;
     
     if ((*slist)->head == NULL)
     {
@@ -111,9 +111,9 @@ int slist_delete(struct slist_t **slist)
  * print_list() - Print the contents of list.
  *
  */
-void print_list(struct slist_t *slist)
+void print_list(slist_t *slist)
 {
-    struct slist_node_t *current;
+    slist_node_t *current;
     
     printf("Printing List:\n");
     current = slist->head;
