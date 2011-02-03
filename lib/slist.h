@@ -17,7 +17,7 @@ typedef struct _slist_node_t {
 
 /* The actual singly pointed list data structure*/
 typedef struct _slist_t {
-    int size;       /* Size of the list - Unused*/
+    int size;       /* Size of the list*/
     struct _slist_node_t *head;
 }slist_t;
 
@@ -31,6 +31,7 @@ typedef struct _slist_cursor_t {
 __BEGIN_DECLS
 
 slist_t *   slist_init();
+int         slist_len(slist_t *slist);
 int         slist_insert(slist_t **slist, void *data);
 int         slist_insert_at_front(slist_t **slist, void *data);
 int         slist_delete(slist_t **slist);

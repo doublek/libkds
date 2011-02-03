@@ -59,9 +59,12 @@ int main(int argc, char* argv[])
     strncpy(data3, text_data[3], strlen(text_data[3]));
     slist_insert(&slist, (void *)data3);
 
+    printf("Size of list: %d\n", slist_len(slist));
+
     printf("Printing using cursor...\n");
     print_list_using_cursor(slist);
     slist_delete(&slist);
+    printf("Size of list: %d\n", slist_len(slist));
     printf("Printing using cursor...\n");
     print_list_using_cursor(slist);
 

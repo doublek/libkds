@@ -55,8 +55,22 @@ slist_t * slist_init(void)
         return NULL;
 
     slist->head = NULL;
+    slist->size = 0;
 
     return slist;
+}
+
+/*
+ * slist_len() - Get the number of nodes in the slist.
+ *
+ */
+int slist_len(slist_t *slist)
+{
+    if (slist == NULL)
+        return EINVAL;
+
+    return slist->size;
+
 }
 
 /*
@@ -76,6 +90,7 @@ int slist_insert_first_node(slist_t **slist, void *data)
     new_node->data = data;
     new_node->next = NULL;
     (*slist)->head = new_node;
+    (*slist)->size = 1;
     return 0;
 
 }
@@ -114,6 +129,7 @@ int slist_insert_at_front(slist_t **slist, void *data)
     new_node->data = data;
     new_node->next = (*slist)->head;
     (*slist)->head = new_node;
+    (*slist)->size++;
     return 0;
 
 }
@@ -145,6 +161,7 @@ int slist_delete_at_front(slist_t **slist)
 
     node_to_delete = (*slist)->head;
     (*slist)->head = (*slist)->head->next;
+    (*slist)->size--;
 
     free(node_to_delete);
     return 0;
@@ -161,7 +178,7 @@ int slist_delete_at_front(slist_t **slist)
 void * slist_get_node_data(slist_node_t *node)
 {
     if (node ==NULL)
-        return EINVAL;
+        return NULL;
 
     return node->data;
 }
