@@ -5,31 +5,24 @@
 
 #include "slist.h"
 
-void print_list(slist_t *slist)
+void print_list_using_cursor(slist_t *slist)
 {
-    slist_node_t *current;
-    char *data_to_print;
-    int *int_data_to_print;
-    int count = 0;
-    
-    printf("Printing List:\n");
-    current = slist->head;
-    while (current != NULL)
-    {
-        if (count != 0)
-        {
-            data_to_print = (char *)current->data;
-            printf("S %s\n", (char *)data_to_print);
-        }
-        else
-        {
-            int_data_to_print = (int *)current->data;
-            printf("N %d\n", *int_data_to_print);
+    slist_cursor_t *cursor;
 
-        }
-        current = current->next;
-        ++count;
-    }
+    cursor = slist_cursor_init(&slist);
+    printf("Cursor Initialized\n");
+    
+    for(cursor=slist_cursor_init(&slist);
+            !slist_cursor_is_finished(cursor);
+            cursor=slist_cursor_next(cursor))
+        printf("Data: %s\n", (char*)slist_get_cursor_data(cursor));
+
+    /* Alternate more clear loop shown here as an example */
+    /*while(!slist_cursor_is_finished(cursor))
+    {
+        printf("Data: %s\n", (char*)slist_get_cursor_data(cursor));
+        cursor = slist_cursor_next(cursor);
+    }*/
 
 }
 
@@ -37,11 +30,9 @@ int main(int argc, char* argv[])
 {
     slist_t *slist;
 
-    int num_data[] = {1, 2, 3, 4};
     char *text_data[5] = {"A", "B", "C", "D", "E"};
 
-    char *data0, *data1, *data2;
-    int *numeric_test_data;
+    char *data0, *data1, *data2, *data3;
 
     slist = slist_init();
 
@@ -60,13 +51,19 @@ int main(int argc, char* argv[])
     strncpy(data1, text_data[1], strlen(text_data[1]));
     slist_insert(&slist, (void *)data1);
 
-    numeric_test_data = malloc(sizeof(num_data[0]));
-    *numeric_test_data = num_data[0];
-    slist_insert(&slist, (void *)numeric_test_data);
+    data2 = malloc(sizeof(text_data[2]));
+    strncpy(data2, text_data[2], strlen(text_data[2]));
+    slist_insert(&slist, (void *)data2);
 
-    print_list(slist);
+    data3 = malloc(sizeof(text_data[3]));
+    strncpy(data3, text_data[3], strlen(text_data[3]));
+    slist_insert(&slist, (void *)data3);
+
+    printf("Printing using cursor...\n");
+    print_list_using_cursor(slist);
     slist_delete(&slist);
-    print_list(slist);
+    printf("Printing using cursor...\n");
+    print_list_using_cursor(slist);
 
 
     return 0;
