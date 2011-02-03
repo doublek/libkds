@@ -150,3 +150,71 @@ int slist_delete_at_front(slist_t **slist)
     return 0;
     
 }
+
+/* Data Access */
+
+/*
+ * slist_get_data() - Get the data of the current node
+ *
+ *
+ */
+void * slist_get_node_data(slist_node_t *node)
+{
+    if (node ==NULL)
+        return EINVAL;
+
+    return node->data;
+}
+/* End Data Access*/
+
+/*
+ * Begin Cursor Implementation.
+ */
+
+/*
+ * slist_cursor_init() - Get a cursor iterator.
+ *
+ * Returns a cursor capable of iterating through the slist.
+ * The initialized cursor will point to the first node of the slist.
+ *
+ */
+slist_cursor_t * slist_cursor_init(slist_t **slist)
+{
+    slist_cursor_t *cursor;
+    cursor = (slist_cursor_t *)malloc(sizeof(slist_cursor_t));
+    cursor->slist = *slist;
+    cursor->node = (*slist)->head;
+    return cursor;
+}
+
+/*
+ * slist_cursor_next
+ */
+slist_cursor_t * slist_cursor_next(slist_cursor_t *cursor)
+{
+    cursor->node = cursor->node->next;
+    return cursor;
+}
+
+/*
+ * slist_cursor_is_finished - Test if we are done interating over our slist.
+ *
+ * Returns 1 if iteration is over else returns 0.
+ */
+int slist_cursor_is_finished(slist_cursor_t *cursor)
+{
+    return cursor->node == NULL ? 1 : 0;
+}
+
+/*
+ * slist_get_data_from_cursor() - Get data for the node currently pointed by the
+ * cursor.
+ */
+void * slist_get_cursor_data(slist_cursor_t *cursor)
+{
+    return slist_get_node_data(cursor->node);
+}
+
+/*
+ * End Cursor Implementation.
+ */

@@ -21,6 +21,13 @@ typedef struct _slist_t {
     struct _slist_node_t *head;
 }slist_t;
 
+/* A simple cursor that can be used to iterate over the slist */
+typedef struct _slist_cursor_t {
+    slist_t *slist;
+    slist_node_t *node;
+
+}slist_cursor_t;
+
 __BEGIN_DECLS
 
 slist_t *   slist_init();
@@ -28,11 +35,18 @@ int         slist_insert(slist_t **slist, void *data);
 int         slist_insert_at_front(slist_t **slist, void *data);
 int         slist_delete(slist_t **slist);
 int         slist_delete_at_front(slist_t **slist);
+void *      slist_get_node_data(slist_node_t *node);
 /*
 extern int          slist_insert_at_end(slist_t **slist, void *data);
 extern int          slist_delete_at_end(slist_t **slist, void *data);
 extern int          slist_delete_in_front(slist_t **slist, void *data);
 */
+
+/* Cursor Operations */
+slist_cursor_t *    slist_cursor_init(slist_t **slist);
+slist_cursor_t *    slist_cursor_next(slist_cursor_t *cursor);
+int                 slist_cursor_is_finished(slist_cursor_t *cursor);
+void *              slist_get_cursor_data(slist_cursor_t *cursor);
 
 __END_DECLS
 
