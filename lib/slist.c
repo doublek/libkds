@@ -74,6 +74,25 @@ int slist_len(slist_t *slist)
 }
 
 /*
+ * slist_set_compare_function() - Register a comparison function.
+ *
+ * Used to register a user defined comparison function that will be used for
+ * comparison operations on slist's data. 
+ * The registered function MUST exhibit the following behavior:
+ *  1. Return 0 for equal data.
+ *  2. Return -1 for LHS less than RHS.
+ *  3. Return 1 for LHS greater than RHS.
+ *  4. Any other return value will be considered as a failure.
+ *
+ */
+void slist_set_compare_function(slist_t **slist,
+                                slist_compare_func_t *compare_func)
+{
+    printf("Set Compare Function successfully\n");
+    (*slist)->slist_data_compare = compare_func;
+}
+
+/*
  * slist_insert_first_node() - Insert first node into a slist.
  *
  */
@@ -168,11 +187,10 @@ int slist_delete_at_front(slist_t **slist)
     
 }
 
-/* Data Access */
-
 /*
  * slist_get_data() - Get the data of the current node
  *
+ * Returns the data that is stored in node. Returns NULL on error.
  *
  */
 void * slist_get_node_data(slist_node_t *node)
@@ -182,7 +200,30 @@ void * slist_get_node_data(slist_node_t *node)
 
     return node->data;
 }
-/* End Data Access*/
+
+/*
+ * slist_find_node() - Find a node in the given slist.
+ *
+ * Return the position number if the node is found else returns -1. A return
+ * value of 0 indicates that the node was found and is the head node.
+ */
+int slist_find_node(slist_t *slist, slist_node_t *node)
+{
+    slist_cursor_t *cursor;
+    int node_pos = 0;
+
+    for(cursor=slist_cursor_init(&slist); !slist_cursor_is_finished(cursor);
+            cursor=slist_cursor_next(cursor))
+    {
+        if((slist->slist_data_compare)(node->data, slist_get_cursor_data(cursor)) == 0)
+            return node_pos;
+        node_pos++;
+    }
+
+    /* Node not found*/
+    return -1;
+}
+
 
 /*
  * Begin Cursor Implementation.
@@ -205,7 +246,9 @@ slist_cursor_t * slist_cursor_init(slist_t **slist)
 }
 
 /*
- * slist_cursor_next
+ * slist_cursor_next() - Advance cursor to next slist element.
+ *
+ * Returns a cursor to the next slist element.
  */
 slist_cursor_t * slist_cursor_next(slist_cursor_t *cursor)
 {
@@ -226,6 +269,8 @@ int slist_cursor_is_finished(slist_cursor_t *cursor)
 /*
  * slist_get_data_from_cursor() - Get data for the node currently pointed by the
  * cursor.
+ *
+ * Returns the data that is stored in cursor. Returns NULL on error.
  */
 void * slist_get_cursor_data(slist_cursor_t *cursor)
 {
