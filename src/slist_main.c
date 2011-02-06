@@ -26,6 +26,15 @@ void print_list_using_cursor(slist_t *slist)
 
 }
 
+int compare_data(const void *data1, const void *data2)
+{
+    char *lhs = (char *)data1;
+    char *rhs = (char *)data2;
+
+    printf("Comparing LHS %s to RHS %s\n", lhs, rhs);
+    return strcmp(lhs, rhs);
+}
+
 int main(int argc, char* argv[])
 {
     slist_t *slist;
@@ -34,7 +43,10 @@ int main(int argc, char* argv[])
 
     char *data0, *data1, *data2, *data3;
 
+    slist_node_t *query_node;
+
     slist = slist_init();
+    slist_set_compare_function(&slist, compare_data);
 
     if(slist == NULL)
         printf("Error occured during init\n");
@@ -68,6 +80,16 @@ int main(int argc, char* argv[])
     printf("Printing using cursor...\n");
     print_list_using_cursor(slist);
 
+    query_node = (slist_node_t *)malloc(sizeof(slist_node_t));
+
+    query_node->data = (char *)malloc(sizeof(strlen("C")));
+    strncpy(query_node->data, "C", strlen("C"));
+    query_node->next = NULL;
+
+    if(slist_find_node(slist, query_node) >= 0)
+        printf("Found data\n");
+    else
+        printf("Data not found\n");
 
     return 0;
 
