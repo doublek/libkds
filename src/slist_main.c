@@ -39,11 +39,9 @@ int main(int argc, char* argv[])
 {
     slist_t *slist;
 
-    char *text_data[5] = {"A", "B", "C", "D", "E"};
+    char *text_data[] = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
 
-    char *data0, *data1, *data2, *data3;
-
-    slist_node_t *query_node;
+    char *data0, *data1, *data2, *data3 , *data4 , *data5 , *data6;
 
     slist = slist_init();
     slist_set_compare_function(&slist, compare_data);
@@ -71,26 +69,31 @@ int main(int argc, char* argv[])
     strncpy(data3, text_data[3], strlen(text_data[3]));
     slist_insert(&slist, (void *)data3);
 
+    data5 = malloc(sizeof(text_data[5]));
+    strncpy(data5, text_data[5], strlen(text_data[5]));
+    slist_insert(&slist, (void *)data5);
+
     printf("Size of list: %d\n", slist_len(slist));
 
+    printf("Printing using cursor...\n");
+    print_list_using_cursor(slist);
+
+    if(slist_find_node(slist, "C"))
+        printf("Found data\n");
+    else
+        printf("Data not found\n");
+
+    data4 = malloc(sizeof(text_data[4]));
+    strncpy(data4, text_data[4], strlen(text_data[4]));
+    slist_insert_after(&slist, (void*)data5, (void *)data4);
+
+    printf("Size of list: %d\n", slist_len(slist));
     printf("Printing using cursor...\n");
     print_list_using_cursor(slist);
     slist_delete(&slist);
     printf("Size of list: %d\n", slist_len(slist));
     printf("Printing using cursor...\n");
     print_list_using_cursor(slist);
-
-    query_node = (slist_node_t *)malloc(sizeof(slist_node_t));
-
-    query_node->data = (char *)malloc(sizeof(strlen("C")));
-    strncpy(query_node->data, "C", strlen("C"));
-    query_node->next = NULL;
-
-    if(slist_find_node(slist, query_node) >= 0)
-        printf("Found data\n");
-    else
-        printf("Data not found\n");
-
     return 0;
 
 }
