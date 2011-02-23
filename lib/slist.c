@@ -238,7 +238,7 @@ int slist_delete_at_front(slist_t **slist)
 }
 
 /*
- * slist_get_data() - Get the data of the current node
+ * slist_get_node_data() - Get the data of the current node
  *
  * Returns the data that is stored in node. Returns NULL on error.
  *
