@@ -185,7 +185,6 @@ int slist_insert_after(slist_t **slist, void *existing_data, void *new_data)
 
     slist_node_t *new_node;
     slist_node_t *current_node;
-    slist_cursor_t *cursor;
 
     new_node = slist_create_node(new_data);
     if (new_node == NULL)
@@ -238,6 +237,32 @@ int slist_delete_at_front(slist_t **slist)
 }
 
 /*
+ * slist_delete_after() - Delete node after node containing data.
+ *
+ * Deletes the node occuring after existing data. On success returns 0.
+ *
+ */
+int slist_delete_after(slist_t **slist, void *data)
+{
+    slist_node_t *node, *node_to_remove;
+
+    node = slist_find_node(*slist, data);
+
+    if (node == NULL)
+        return -1;
+
+    /* Last node Cannot be delete */
+    if (node->next == NULL)
+        return -1;
+
+    node_to_remove = node->next;
+    node->next = node->next->next;
+
+    free(node_to_remove);
+
+}
+
+/*
  * slist_get_node_data() - Get the data of the current node
  *
  * Returns the data that is stored in node. Returns NULL on error.
@@ -260,7 +285,7 @@ void * slist_get_node_data(slist_node_t *node)
  */
 slist_node_t * slist_find_node(slist_t *slist, void *data)
 {
-    slist_node_t *node;
+    slist_node_t *node, *ret_node;
     slist_cursor_t *cursor;
 
     node = slist_create_node(data);
@@ -274,7 +299,9 @@ slist_node_t * slist_find_node(slist_t *slist, void *data)
         if((slist->slist_data_compare)(node->data, slist_get_cursor_data(cursor)) == 0)
         {
             free(node);
-            return cursor->node;
+            ret_node = cursor->node;
+            free(cursor);
+            return ret_node;
         }
     }
 
