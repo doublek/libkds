@@ -34,12 +34,25 @@
 /*
  * slist_create_node() - Create a new slist_node_t.
  *
-struct slist_node_t slist_create_node(void)
-{
-
-    return NULL;
-}
+ * Create a new slist-node. To create a empty node just call this
+ * function with NULL data.  * On success returns a newly created 
+ * node else returns NULL.
+ *
  */
+slist_node_t * slist_create_node(void *data)
+{
+    slist_node_t* node;
+
+    node = (slist_node_t *)malloc(sizeof(slist_node_t));
+
+    if (node == NULL)
+        return NULL;
+
+    node->data = data;
+    node->next = NULL;
+
+    return node;
+}
 
 /*
  * slist_init() - Initialize a singly linked list.
@@ -98,16 +111,19 @@ void slist_set_compare_function(slist_t **slist,
  */
 int slist_insert_first_node(slist_t **slist, void *data)
 {
-    slist_node_t *new_node;
-    new_node = malloc(sizeof(slist_node_t));
+    slist_node_t *new_node = slist_create_node(data);
 
     if (new_node == NULL)
         return ENOMEM;
 
     printf("Creating first element in the list with data %s\n",
             (char *)data);
-    new_node->data = data;
-    new_node->next = NULL;
+
+    /* 
+     * slist_create_node already did the necessary work of creating
+     * a node for us. All we need to do at this point is to point head
+     * at the right plae.
+     */
     (*slist)->head = new_node;
     (*slist)->size = 1;
     return 0;
@@ -132,8 +148,7 @@ int slist_insert(slist_t **slist, void *data)
  */
 int slist_insert_at_front(slist_t **slist, void *data)
 {
-    slist_node_t *new_node;
-    new_node = malloc(sizeof(slist_node_t));
+    slist_node_t *new_node = slist_create_node(data);
 
     if (new_node == NULL)
         return ENOMEM;
@@ -145,12 +160,46 @@ int slist_insert_at_front(slist_t **slist, void *data)
     }
 
     printf("Inserting %s in the list\n", (char *)data);
-    new_node->data = data;
+    /*
+     * Node creating already taken care of by slist_create_node().
+     * We just update the next pointer here.
+     */
     new_node->next = (*slist)->head;
     (*slist)->head = new_node;
     (*slist)->size++;
     return 0;
 
+}
+
+/*
+ * slist_insert_after() - Insert new node after data.
+ *
+ * Inserts a new node in the slist after the specified data.
+ * This function depends on the existence of a slist_compare_data function
+ * provided when creating a slist i.e, slist_find_node() should be able to
+ * find the node.
+ *
+ */
+int slist_insert_after(slist_t **slist, void *existing_data, void *new_data)
+{
+
+    slist_node_t *new_node;
+    slist_node_t *current_node;
+    slist_cursor_t *cursor;
+
+    new_node = slist_create_node(new_data);
+    if (new_node == NULL)
+        return ENOMEM;
+
+    current_node = slist_find_node(*slist, existing_data);
+
+    if (current_node == NULL)
+        return -1; /* Data not found */
+
+    new_node->next = current_node->next;
+    current_node->next = new_node;
+
+    return 0;
 }
 
 /*
@@ -182,6 +231,7 @@ int slist_delete_at_front(slist_t **slist)
     (*slist)->head = (*slist)->head->next;
     (*slist)->size--;
 
+    /* TODO Add a user-defined funtion pointer */
     free(node_to_delete);
     return 0;
     
@@ -204,24 +254,32 @@ void * slist_get_node_data(slist_node_t *node)
 /*
  * slist_find_node() - Find a node in the given slist.
  *
- * Return the position number if the node is found else returns -1. A return
- * value of 0 indicates that the node was found and is the head node.
+ * Return original node if the node is found else returns NULL.
+ * The data contained in the node can be accessed by calling
+ * slist_get_node_data().
  */
-int slist_find_node(slist_t *slist, slist_node_t *node)
+slist_node_t * slist_find_node(slist_t *slist, void *data)
 {
+    slist_node_t *node;
     slist_cursor_t *cursor;
-    int node_pos = 0;
+
+    node = slist_create_node(data);
+
+    if (node == NULL)
+        return NULL;
 
     for(cursor=slist_cursor_init(&slist); !slist_cursor_is_finished(cursor);
             cursor=slist_cursor_next(cursor))
     {
         if((slist->slist_data_compare)(node->data, slist_get_cursor_data(cursor)) == 0)
-            return node_pos;
-        node_pos++;
+        {
+            free(node);
+            return cursor->node;
+        }
     }
 
     /* Node not found*/
-    return -1;
+    return NULL;
 }
 
 

@@ -37,16 +37,22 @@ typedef struct _slist_cursor_t {
 __BEGIN_DECLS
 
 /* SList Operations */
-slist_t *   slist_init();
 int         slist_len(slist_t *slist);
 void        slist_set_compare_function(slist_t **slist,
-                                        slist_compare_func_t *compare_func);
-int         slist_insert(slist_t **slist, void *data);
-int         slist_insert_at_front(slist_t **slist, void *data);
-int         slist_delete(slist_t **slist);
-int         slist_delete_at_front(slist_t **slist);
-void *      slist_get_node_data(slist_node_t *node);
-int         slist_find_node(slist_t *slist, slist_node_t *node);
+                                       slist_compare_func_t *compare_func);
+
+slist_node_t * slist_create_node(void *data);
+
+slist_t *       slist_init();
+int             slist_insert(slist_t **slist, void *data);
+int             slist_insert_at_front(slist_t **slist, void *data);
+int             slist_insert_after(slist_t **slist, void *existing_data,
+                                   void *new_data);
+int             slist_delete(slist_t **slist);
+int             slist_delete_at_front(slist_t **slist);
+int             slist_delete_after(slist_t **slist, void *data);
+void *          slist_get_node_data(slist_node_t *node);
+slist_node_t *  slist_find_node(slist_t *slist, void *data);
 
 /* Cursor Operations on SList*/
 slist_cursor_t *    slist_cursor_init(slist_t **slist);
