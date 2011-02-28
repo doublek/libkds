@@ -5,33 +5,6 @@
 #include "slist.h"
 
 /*
- * This is what I intend to do!
- *
- *   NULL
- *    ^
- *    |
- *   head
- *
- * +-----+
- * |     |
- * |     |
- * |     |
- * +-----+
- *    ^
- *    |
- *   head
- * +-----+   +-----+
- * |     |   |     |
- * |     |-->|     |
- * |     |   |     |
- * +-----+   +-----+
- *    ^
- *    |
- *   head
- *
- */
-
-/*
  * slist_create_node() - Create a new slist_node_t.
  *
  * Create a new slist-node. To create a empty node just call this
