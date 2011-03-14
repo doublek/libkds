@@ -30,6 +30,7 @@ slist_node_t * slist_create_node(void *data)
 /*
  * slist_init() - Initialize a singly linked list.
  *
+ *
  */
 slist_t * slist_init(void)
 {
@@ -76,6 +77,28 @@ void slist_set_compare_function(slist_t **slist,
 {
     printf("Set Compare Function successfully\n");
     (*slist)->slist_data_compare = compare_func;
+}
+
+/*
+ * slist_set_node_free_func() - Bind a memory free operation callback to slist
+ *
+ * When not NULL should contain * a callback to a function that will be called
+ * right after the data is removed.
+ *
+ * The behavior if the callback is described as:
+ *  - Accepts one arguments which will contain the pointer to the data that was
+ *    stored in an slist's node.
+ *  - Can return any arbitrary value that will be returned by slist functions
+ *    that call this node_free_func callback.
+ *  - slist_delete() (and related flavors will return values returned by the
+ *    callback.
+ *  - In slist_remove() (and related flavors), if callback is NULL, then the
+ *    callback is obviously not called; instead the removed element is returned.
+ *
+ */    
+void slist_set_node_free_func(slist_t **slist, slist_node_free_func_t *free_func)
+{
+    (*slist)->node_free_func = free_func; /* No harm done if free_func is NULL */
 }
 
 /*
@@ -180,33 +203,30 @@ int slist_insert_after(slist_t **slist, void *existing_data, void *new_data)
  * Deletes a node from the list. This is just a simple wrapper around the 
  * slist_delete_at_front() method.
  */
-int slist_delete(slist_t **slist)
+void * slist_delete(slist_t **slist)
 {
     return slist_delete_at_front(slist);
 }
 
 /*
- * slist_remove_at_front() - Remove from head entry.
+ * slist_delete_at_front() - Remove from head entry.
  *
  */
-int slist_delete_at_front(slist_t **slist)
+void * slist_delete_at_front(slist_t **slist)
 {
     slist_node_t *node_to_delete;
     
     if ((*slist)->head == NULL)
     {
         printf("List empty. No operation performed\n");
-        return EPERM;
+        return NULL;
     }
 
     node_to_delete = (*slist)->head;
     (*slist)->head = (*slist)->head->next;
     (*slist)->size--;
 
-    /* TODO Add a user-defined funtion pointer */
-    free(node_to_delete);
-    return 0;
-    
+    return ((*slist)->node_free_func)(node_to_delete);
 }
 
 /*
@@ -215,24 +235,23 @@ int slist_delete_at_front(slist_t **slist)
  * Deletes the node occuring after existing data. On success returns 0.
  *
  */
-int slist_delete_after(slist_t **slist, void *data)
+void * slist_delete_after(slist_t **slist, void *data)
 {
     slist_node_t *node, *node_to_remove;
 
     node = slist_find_node(*slist, data);
 
     if (node == NULL)
-        return -1;
+        return NULL;
 
     /* Last node Cannot be delete */
     if (node->next == NULL)
-        return -1;
+        return NULL;
 
     node_to_remove = node->next;
     node->next = node->next->next;
 
-    free(node_to_remove);
-
+    return ((*slist)->node_free_func)(node_to_remove);
 }
 
 /*

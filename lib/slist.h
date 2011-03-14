@@ -3,7 +3,8 @@
 
 #include "localmacros.h"
 
-typedef int (slist_compare_func_t)(const void *, const void *); 
+typedef int     (slist_compare_func_t)(const void *, const void *); 
+typedef void *  (slist_node_free_func_t)(void *); 
 
 /* The node of singly pointed list data structure.
  * XXX Note that we current;y use a void* data type below. Although this is
@@ -17,14 +18,16 @@ typedef struct _slist_node_t {
     void *data;
 }slist_node_t;
 
-/* The actual singly pointed list data structure*/
+/* The actual singly pointed list data structure */
 typedef struct _slist_t {
     int size;       /* Size of the list*/
     struct _slist_node_t *head;
 
-    /* User supplied function for comparing slist's data.*/
-    //slist_compare_func_t *slist_compare;   
+    /* User supplied callback for comparing slist's data. */
     slist_compare_func_t *slist_data_compare;
+
+    /* User supplied callback which will be called right after data is removed. */
+    slist_node_free_func_t *node_free_func;
 }slist_t;
 
 /* A simple cursor that can be used to iterate over the slist */
@@ -40,17 +43,17 @@ __BEGIN_DECLS
 int         slist_len(slist_t *slist);
 void        slist_set_compare_function(slist_t **slist,
                                        slist_compare_func_t *compare_func);
+void        slist_set_node_free_func(slist_t **slist, 
+                                     slist_node_free_func_t *free_func);
 
-slist_node_t * slist_create_node(void *data);
-
-slist_t *       slist_init();
+slist_t *       slist_init(void);
 int             slist_insert(slist_t **slist, void *data);
 int             slist_insert_at_front(slist_t **slist, void *data);
 int             slist_insert_after(slist_t **slist, void *existing_data,
                                    void *new_data);
-int             slist_delete(slist_t **slist);
-int             slist_delete_at_front(slist_t **slist);
-int             slist_delete_after(slist_t **slist, void *data);
+void *          slist_delete(slist_t **slist);
+void *          slist_delete_at_front(slist_t **slist);
+void *          slist_delete_after(slist_t **slist, void *data);
 void *          slist_get_node_data(slist_node_t *node);
 slist_node_t *  slist_find_node(slist_t *slist, void *data);
 
