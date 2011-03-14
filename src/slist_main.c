@@ -35,6 +35,12 @@ int compare_data(const void *data1, const void *data2)
     return strcmp(lhs, rhs);
 }
 
+void * free_data(void *data)
+{
+    printf("%s: Called\n", __func__);
+    return data;
+}
+
 int main(int argc, char* argv[])
 {
     slist_t *slist;
@@ -47,6 +53,7 @@ int main(int argc, char* argv[])
 
     slist = slist_init();
     slist_set_compare_function(&slist, compare_data);
+    slist_set_node_free_func(&slist, free_data);
 
     if(slist == NULL)
         printf("Error occured during init\n");
@@ -103,7 +110,7 @@ int main(int argc, char* argv[])
     /* Delete head */
     printf("**************************\n");
     printf("Delete\n");
-    slist_delete(&slist);
+    free(slist_delete(&slist));
     printf("Size of list: %d\n", slist_len(slist));
     printf("Printing using cursor...\n");
     print_list_using_cursor(slist);
@@ -111,7 +118,7 @@ int main(int argc, char* argv[])
     /* Delete after */
     printf("**************************\n");
     printf("Delete after...\n");
-    slist_delete_after(&slist, (void *)data2);
+    free(slist_delete_after(&slist, (void *)data2));
     printf("Size of list: %d\n", slist_len(slist));
     printf("Printing using cursor...\n");
     print_list_using_cursor(slist);
