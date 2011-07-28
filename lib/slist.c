@@ -4,7 +4,7 @@
 
 #include "slist.h"
 
-/*
+/**
  * slist_create_node() - Create a new slist_node_t.
  *
  * Create a new slist-node. To create a empty node just call this
@@ -27,7 +27,7 @@ slist_node_t * slist_create_node(void *data)
     return node;
 }
 
-/*
+/**
  * slist_init() - Initialize a singly linked list.
  *
  *
@@ -47,7 +47,7 @@ slist_t * slist_init(void)
     return slist;
 }
 
-/*
+/**
  * slist_len() - Get the number of nodes in the slist.
  *
  */
@@ -60,7 +60,7 @@ int slist_len(slist_t *slist)
 
 }
 
-/*
+/**
  * slist_set_compare_function() - Register a comparison function.
  *
  * Used to register a user defined comparison function that will be used for
@@ -79,7 +79,7 @@ void slist_set_compare_function(slist_t **slist,
     (*slist)->slist_data_compare = compare_func;
 }
 
-/*
+/**
  * slist_set_node_free_func() - Bind a memory free operation callback to slist
  *
  * When not NULL should contain * a callback to a function that will be called
@@ -101,7 +101,7 @@ void slist_set_node_free_func(slist_t **slist, slist_node_free_func_t *free_func
     (*slist)->node_free_func = free_func; /* No harm done if free_func is NULL */
 }
 
-/*
+/**
  * slist_insert_first_node() - Insert first node into a slist.
  *
  */
@@ -126,7 +126,7 @@ int slist_insert_first_node(slist_t **slist, void *data)
 
 }
 
-/*
+/**
  * slist_insert() - Default insert operation.
  *
  * Inserts data at front. A simple wrapper that just calls
@@ -137,7 +137,7 @@ int slist_insert(slist_t **slist, void *data)
     return slist_insert_at_front(slist, data);
 }
 
-/*
+/**
  * slist_insert_at_front() - Default insert operation.
  *
  * Inserts data at the front of the list.
@@ -167,7 +167,7 @@ int slist_insert_at_front(slist_t **slist, void *data)
 
 }
 
-/*
+/**
  * slist_insert_after() - Insert new node after data.
  *
  * Inserts a new node in the slist after the specified data.
@@ -197,7 +197,7 @@ int slist_insert_after(slist_t **slist, void *existing_data, void *new_data)
     return 0;
 }
 
-/*
+/**
  * slist_delete() - Default delete operation.
  *
  * Deletes a node from the list. This is just a simple wrapper around the 
@@ -208,7 +208,7 @@ void * slist_delete(slist_t **slist)
     return slist_delete_at_front(slist);
 }
 
-/*
+/**
  * slist_delete_at_front() - Remove from head entry.
  *
  */
@@ -229,7 +229,7 @@ void * slist_delete_at_front(slist_t **slist)
     return ((*slist)->node_free_func)(node_to_delete);
 }
 
-/*
+/**
  * slist_delete_after() - Delete node after node containing data.
  *
  * Deletes the node occuring after existing data. On success returns 0.
@@ -254,7 +254,7 @@ void * slist_delete_after(slist_t **slist, void *data)
     return ((*slist)->node_free_func)(node_to_remove);
 }
 
-/*
+/**
  * slist_get_node_data() - Get the data of the current node
  *
  * Returns the data that is stored in node. Returns NULL on error.
@@ -268,7 +268,7 @@ void * slist_get_node_data(slist_node_t *node)
     return node->data;
 }
 
-/*
+/**
  * slist_find_node() - Find a node in the given slist.
  *
  * Return original node if the node is found else returns NULL.
@@ -306,7 +306,7 @@ slist_node_t * slist_find_node(slist_t *slist, void *data)
  * Begin Cursor Implementation.
  */
 
-/*
+/**
  * slist_cursor_init() - Get a cursor iterator.
  *
  * Returns a cursor capable of iterating through the slist.
@@ -322,7 +322,7 @@ slist_cursor_t * slist_cursor_init(slist_t **slist)
     return cursor;
 }
 
-/*
+/**
  * slist_cursor_next() - Advance cursor to next slist element.
  *
  * Returns a cursor to the next slist element.
@@ -333,7 +333,7 @@ slist_cursor_t * slist_cursor_next(slist_cursor_t *cursor)
     return cursor;
 }
 
-/*
+/**
  * slist_cursor_is_finished - Test if we are done interating over our slist.
  *
  * Returns 1 if iteration is over else returns 0.
@@ -343,7 +343,7 @@ int slist_cursor_is_finished(slist_cursor_t *cursor)
     return cursor->node == NULL ? 1 : 0;
 }
 
-/*
+/**
  * slist_get_data_from_cursor() - Get data for the node currently pointed by the
  * cursor.
  *
@@ -354,6 +354,6 @@ void * slist_get_cursor_data(slist_cursor_t *cursor)
     return slist_get_node_data(cursor->node);
 }
 
-/*
+/**
  * End Cursor Implementation.
  */

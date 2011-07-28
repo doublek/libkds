@@ -6,7 +6,8 @@
 typedef int     (slist_compare_func_t)(const void *, const void *); 
 typedef void *  (slist_node_free_func_t)(void *); 
 
-/* The node of singly pointed list data structure.
+/** \struct
+ * The node of singly pointed list data structure.
  * XXX Note that we current;y use a void* data type below. Although this is
  * present to allow generic data types to be used, it is recommended to not
  * mix data types while using the slist. slist should still work with a
